@@ -8,7 +8,8 @@ from s3commands import *
 
 
 commands = {
-    "create_bucket": create_bucket    
+    "create_bucket": create_bucket,
+    "list": list,
 }
 
 
