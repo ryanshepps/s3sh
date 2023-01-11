@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import configparser
 import boto3
 
@@ -26,6 +27,13 @@ def main():
         sys.exit()
     else:
         print("You are now connected to your S3 storage")
+
+    while True:
+        command = input("S5> ")
+        if command == "exit":
+            break
+        else:
+            os.system(command)
 
 
 if "__main__" == __name__:
