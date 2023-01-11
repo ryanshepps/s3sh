@@ -4,6 +4,12 @@ import os
 import configparser
 import boto3
 import botocore
+from s3commands import *
+
+
+commands = {
+    "create_bucket": create_bucket    
+}
 
 
 def getAuthenticatedClient():
@@ -35,7 +41,16 @@ def main():
         if command == "exit":
             break
         else:
-            os.system(command)
+            split_command = command.split(" ")
+
+            if split_command[0] in commands:
+                try:
+                    return_message = commands[split_command[0]](client, split_command)
+                    print(return_message)
+                except Exception as e:
+                    print("An unknwon error occurred while running your command: \n\t{}".format(e))
+            else:
+                os.system(command)
 
 
 if "__main__" == __name__:
