@@ -1,7 +1,5 @@
 import botocore
 
-success_message = "Success"
-
 def __get_flags(split_command):
     flags = []
 
@@ -30,8 +28,6 @@ def create_bucket(client, split_command):
     except botocore.exceptions.ClientError as e:
         return "Cannot create bucket: \n\t{}".format(e)
 
-    return success_message
-
 
 def list(client, split_command):
     flags = __get_flags(split_command)
@@ -45,5 +41,3 @@ def list(client, split_command):
         print("list long format")
     else:
         print("list short format")
-
-    return success_message

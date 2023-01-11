@@ -47,7 +47,8 @@ def main():
             if split_command[0] in commands:
                 try:
                     return_message = commands[split_command[0]](client, split_command)
-                    print(return_message)
+                    if return_message is not None:
+                        print(return_message)
                 except Exception as e:
                     print("An unknwon error occurred while running your command: \n\t{}".format(e))
             else:
