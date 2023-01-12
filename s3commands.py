@@ -45,7 +45,7 @@ def __get_s3_folder_path(s3_path):
     
 
 def create_bucket(client, split_command):
-    bucket_name = split_command[1]
+    bucket_name = __get_bucket_name(split_command[1])
 
     try:
         client.create_bucket(Bucket=bucket_name)
