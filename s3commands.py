@@ -20,8 +20,18 @@ def __get_args(split_command):
     
     return args
 
+
 def __get_bucket_name(s3_path):
-    return s3_path.split("/")[0]
+    bucket_name = None
+    split_path = s3_path.split("/")
+    
+    if split_path[0] == "":
+        bucket_name = split_path[1]
+    else:
+        bucket_name = split_path[0]
+
+    return bucket_name
+
 
 def __get_s3_folder_path(s3_path):
     bucket_removed_path = s3_path.split("/")
