@@ -10,6 +10,7 @@ from s3commands import *
 commands = {
     "create_bucket": create_bucket,
     "list": list,
+    "locs3cp": locs3cp,
 }
 
 
