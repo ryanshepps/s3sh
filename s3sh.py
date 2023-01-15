@@ -4,7 +4,7 @@ import os
 import configparser
 import boto3
 import botocore
-from s3commands import *
+from s3commands import create_bucket, list, locs3cp
 
 
 commands = {
