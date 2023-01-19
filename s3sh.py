@@ -4,13 +4,16 @@ import os
 import configparser
 import boto3
 import botocore
-from s3commands import create_bucket, list, locs3cp
+from s3commands import \
+    create_bucket, list, locs3cp, \
+    cwlocn, chlocn
 
 
 commands = {
     "create_bucket": create_bucket,
     "list": list,
     "locs3cp": locs3cp,
+    "cwlocn": cwlocn,
 }
 
 
@@ -38,22 +41,26 @@ def main():
 
     client = getAuthenticatedClient()
 
+    s3_location = "/"
+
     while client is not None:
-        command = input("S5> ")
-        if command == "exit":
-            break
-        else:
+        command = input("S5 {}> ".format(s3_location))
+
+        try:
             split_command = command.split(" ")
 
-            if split_command[0] in commands:
-                try:
-                    return_message = commands[split_command[0]](client, split_command)
-                    if return_message is not None:
-                        print(return_message)
-                except Exception as e:
-                    print("An unknwon error occurred while running your command: \n\t{}".format(e))
+            if split_command[0] == "exit":
+                break
+            if split_command[0] == "chlocn":
+                s3_location = chlocn(client, split_command, s3_location)
+            elif split_command[0] in commands:
+                return_message = commands[split_command[0]](client, split_command, s3_location)
+                if return_message is not None:
+                    print(return_message)
             else:
                 os.system(command)
+        except Exception as e:
+            print("An unknwon error occurred while running your command: \n\t{}".format(e))
 
 
 if "__main__" == __name__:
