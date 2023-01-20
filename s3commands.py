@@ -11,7 +11,9 @@ from utils.path import \
     get_path_without_root
 from utils.s3 import \
     list_objects, \
-    list_buckets
+    list_buckets, \
+    bucket_exists, \
+    object_exists
 
 
 def create_bucket(client, split_command, s3_location):
@@ -68,36 +70,63 @@ def cwlocn(client, split_command, s3_location):
     print(s3_location)
 
 
+def __change_bucket_location(client, s3_location, bucket_name):
+    new_s3_location = s3_location
+
+    if bucket_exists(client, bucket_name):
+        new_s3_location = "/" + bucket_name
+    else:
+        raise Exception("Bucket does not exist")
+
+    return new_s3_location
+
+
+def __change_directory_location(client, current_s3_location, directory_name):
+    object = object_exists(
+        client,
+        get_root_from_path(current_s3_location),
+        get_path_without_root(current_s3_location) + directory_name,
+    )
+
+    if 'Contents' not in object:
+        raise Exception("{} could not be found in {}".format(
+            directory_name,
+            current_s3_location
+        ))
+    else:
+        return current_s3_location + "/" + directory_name + "/"
+
+
 def chlocn(client, split_command, s3_location):
     new_s3_location = s3_location
 
-    split_requested_s3_path = str(PurePath(split_command[1])).split("/")
-    try:
+    if split_command[1][0] == "/":
+        print("Not doing relative paths right now.")
+    else:
+        split_requested_s3_path = str(PurePath(split_command[1])).split("/")
         current_s3_location = s3_location
 
-        while len(split_requested_s3_path) > 0:
-            if current_s3_location == "/":  # Changing location to a bucket
-                bucket_name = split_requested_s3_path[0]
-                client.head_bucket(Bucket=bucket_name)
-                current_s3_location = "/" + bucket_name
-            else:
-                objects = client.list_objects(
-                    Bucket=get_root_from_path(current_s3_location),
-                    Prefix=get_path_without_root(s3_location) + split_requested_s3_path[0],
-                    MaxKeys=1
-                )
-
-                if 'Contents' not in objects:
-                    raise Exception("{} could not be found in {}".format(split_requested_s3_path[0], split_command[1]))
+        try:
+            while len(split_requested_s3_path) > 0:
+                if current_s3_location == "/":
+                    current_s3_location = __change_bucket_location(
+                        client,
+                        current_s3_location,
+                        split_requested_s3_path[0]
+                    )
                 else:
-                    current_s3_location += "/" + split_requested_s3_path[0] + "/"
+                    current_s3_location = __change_directory_location(
+                        client,
+                        current_s3_location,
+                        split_requested_s3_path[0]
+                    )
 
-            split_requested_s3_path = split_requested_s3_path[1:]
+                split_requested_s3_path = split_requested_s3_path[1:]
 
-        new_s3_location = str(PurePath(current_s3_location)) + "/"
-    except botocore.exceptions.ClientError as e:
-        print("There was an issue changing to that location. Check that the location exists.\n\t{}".format(e))
-    except Exception as e:
-        print("Unable to change to {}.\n\tError: {}.".format(new_s3_location, e))
+            new_s3_location = str(PurePath(current_s3_location)) + "/"
+        except botocore.exceptions.ClientError as e:
+            print("There was an issue changing to that location. Check that the location exists.\n\t{}".format(e))
+        except Exception as e:
+            print("Unable to change to {}.\n\tError: {}.".format(new_s3_location, e))
 
     return new_s3_location
