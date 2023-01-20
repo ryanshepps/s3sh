@@ -1,17 +1,5 @@
 import unittest
-from s3commands import \
-    __get_flags as get_flags, \
-    __get_path_without_root as get_path_without_root
-
-
-class __get_flags(unittest.TestCase):
-    def test_should_return_all_flags_from_split_command(self):
-        mock_split_command = ["command", "-f", "file", "-s", "-t", "--tree", "test"]
-        expected_flags = ["-f", "-s", "-t", "--tree"]
-
-        flags = get_flags(mock_split_command)
-
-        self.assertEqual(flags, expected_flags)
+from utils.path import get_path_without_root
 
 
 class __get_path_without_root(unittest.TestCase):

@@ -1,63 +1,16 @@
 import os
 import botocore
-import re
 from pathlib import PurePath
-
-
-def __get_flags(split_command):
-    flags = []
-
-    for arg in split_command:
-        if arg[0] == "-":
-            flags.append(arg)
-
-    return flags
-
-
-def __get_args(split_command):
-    args = []
-
-    for arg in split_command:
-        if arg[0] != "-":
-            args.append(arg)
-
-    return args
-
-
-def __get_root_from_path(s3_path):
-    bucket_name = None
-
-    pure_path = str(PurePath(s3_path))
-    split_path = pure_path.split("/")
-
-    if split_path[0] == "":
-        bucket_name = split_path[1]
-    else:
-        bucket_name = split_path[0]
-
-    return bucket_name
-
-
-def __get_path_without_root(s3_path):
-    split_s3_path = re.findall(r".*?/", s3_path)
-    file_in_path = re.findall(r"[^/]+$", s3_path)
-
-    root_removed_path = None
-    if split_s3_path[0] == "/":
-        root_removed_path = split_s3_path[2:]
-    else:
-        root_removed_path = split_s3_path[1:]
-
-    s3_file_path = "".join(root_removed_path)
-
-    if file_in_path:
-        s3_file_path += file_in_path[0]
-
-    return s3_file_path
+from utils.cli import \
+    get_flags, \
+    get_args
+from utils.path import \
+    get_root_from_path, \
+    get_path_without_root
 
 
 def create_bucket(client, split_command, s3_location):
-    bucket_name = __get_root_from_path(split_command[1])
+    bucket_name = get_root_from_path(split_command[1])
 
     try:
         client.create_bucket(Bucket=bucket_name)
@@ -66,8 +19,8 @@ def create_bucket(client, split_command, s3_location):
 
 
 def list(client, split_command, s3_location):
-    flags = __get_flags(split_command)
-    args = __get_args(split_command)
+    flags = get_flags(split_command)
+    args = get_args(split_command)
 
     if "-l" in flags:
         print("list long format")
@@ -83,16 +36,16 @@ def list(client, split_command, s3_location):
                 print("")
             else:  # List objects
                 objects = client.list_objects_v2(
-                    Bucket=__get_root_from_path(s3_location),
-                    Prefix=__get_path_without_root(s3_location)
+                    Bucket=get_root_from_path(s3_location),
+                    Prefix=get_path_without_root(s3_location)
                 )
 
                 if "Contents" in objects:
                     already_printed_objects = []
 
                     for object in objects["Contents"]:
-                        object_key_cur_dir_removed = object["Key"].replace(__get_path_without_root(s3_location), "")
-                        top_level_object_key = __get_root_from_path(object_key_cur_dir_removed)
+                        object_key_cur_dir_removed = object["Key"].replace(get_path_without_root(s3_location), "")
+                        top_level_object_key = get_root_from_path(object_key_cur_dir_removed)
 
                         if "/" in object_key_cur_dir_removed:
                             top_level_object_key += "/"
@@ -119,8 +72,8 @@ def locs3cp(client, split_command, s3_location):
         try:
             client.put_object(
                 Body=local_file,
-                Key=__get_path_without_root(s3_path) + os.path.basename(local_file.name),
-                Bucket=__get_root_from_path(s3_path),
+                Key=get_path_without_root(s3_path) + os.path.basename(local_file.name),
+                Bucket=get_root_from_path(s3_path),
             )
         except botocore.exceptions.ClientError as e:
             return "Unsuccessful copy: \n\t{}".format(e)
@@ -144,8 +97,8 @@ def chlocn(client, split_command, s3_location):
                 current_s3_location = "/" + bucket_name
             else:
                 objects = client.list_objects(
-                    Bucket=__get_root_from_path(current_s3_location),
-                    Prefix=__get_path_without_root(s3_location) + split_requested_s3_path[0],
+                    Bucket=get_root_from_path(current_s3_location),
+                    Prefix=get_path_without_root(s3_location) + split_requested_s3_path[0],
                     MaxKeys=1
                 )
 
