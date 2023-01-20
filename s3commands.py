@@ -3,10 +3,15 @@ import botocore
 from pathlib import PurePath
 from utils.cli import \
     get_flags, \
-    get_args
+    get_args, \
+    format_buckets_list, \
+    format_objects_list
 from utils.path import \
     get_root_from_path, \
     get_path_without_root
+from utils.s3 import \
+    list_objects, \
+    list_buckets
 
 
 def create_bucket(client, split_command, s3_location):
@@ -29,32 +34,12 @@ def list(client, split_command, s3_location):
             print("There are arguments... {} List from the relative file location.".format(args[1:]))
         else:
             # There are no arguments, so list the s3_location
-            if s3_location == "/":  # List buckets
-                buckets = client.list_buckets()
-                for bucket in buckets["Buckets"]:
-                    print("{}\t".format(bucket["Name"]), end="")
-                print("")
-            else:  # List objects
-                objects = client.list_objects_v2(
-                    Bucket=get_root_from_path(s3_location),
-                    Prefix=get_path_without_root(s3_location)
-                )
-
-                if "Contents" in objects:
-                    already_printed_objects = []
-
-                    for object in objects["Contents"]:
-                        object_key_cur_dir_removed = object["Key"].replace(get_path_without_root(s3_location), "")
-                        top_level_object_key = get_root_from_path(object_key_cur_dir_removed)
-
-                        if "/" in object_key_cur_dir_removed:
-                            top_level_object_key += "/"
-
-                        if top_level_object_key not in already_printed_objects and top_level_object_key != ".":
-                            # Print object
-                            print("{}\t".format(top_level_object_key), end="")
-                            already_printed_objects.append(top_level_object_key)
-                print("")
+            if s3_location == "/":
+                buckets = list_buckets(client)
+                return format_buckets_list(buckets)
+            else:
+                objects = list_objects(client, s3_location)
+                return format_objects_list(objects, s3_location)
 
 
 def locs3cp(client, split_command, s3_location):
