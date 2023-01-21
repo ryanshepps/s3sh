@@ -21,14 +21,16 @@ def get_path_without_root(s3_path):
     file_in_path = re.findall(r"[^/]+$", s3_path)
 
     root_removed_path = None
-    if split_s3_path[0] == "/":
+    if len(split_s3_path) == 0:  # Path is at root
+        return ""
+    elif split_s3_path[0] == "/":
         root_removed_path = split_s3_path[2:]
     else:
         root_removed_path = split_s3_path[1:]
 
     s3_file_path = "".join(root_removed_path)
 
-    if file_in_path:
+    if split_s3_path[0] != "/" and file_in_path:
         s3_file_path += file_in_path[0]
 
     return s3_file_path

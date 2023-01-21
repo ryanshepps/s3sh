@@ -26,3 +26,14 @@ class __get_path_without_root(unittest.TestCase):
         resulting_path = get_path_without_root(mock_path)
 
         self.assertEqual(resulting_path, expected_path)
+
+    def test_should_return_empty_string_when_path_is_root(self):
+        mock_path = "/test-bucket5807738"
+        mock_path2 = "test-bucket5807738"
+        expected_path = ""
+
+        resulting_path = get_path_without_root(mock_path)
+        resulting_path2 = get_path_without_root(mock_path2)
+
+        self.assertEqual(resulting_path, expected_path)
+        self.assertEqual(resulting_path2, expected_path)
