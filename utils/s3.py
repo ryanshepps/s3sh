@@ -26,3 +26,12 @@ def object_exists(client, bucket_name, object_location):
         Prefix=object_location,
         MaxKeys=1
     )
+
+
+def folder_exists(client, bucket_name, directory_location):
+    return client.list_objects(
+        Bucket=bucket_name,
+        Prefix=directory_location,
+        Delimiter="/",
+        MaxKeys=1
+    )

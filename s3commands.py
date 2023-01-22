@@ -13,7 +13,7 @@ from utils.s3 import \
     list_objects, \
     list_buckets, \
     bucket_exists, \
-    object_exists
+    folder_exists
 
 
 def create_bucket(client, split_command, s3_location):
@@ -82,16 +82,15 @@ def __change_bucket_location(client, s3_location, bucket_name):
 
 
 def __change_directory_location(client, current_s3_location, directory_name):
-    object = object_exists(
+    response = folder_exists(
         client,
         get_root_from_path(current_s3_location),
         get_path_without_root(current_s3_location) + directory_name,
     )
 
-    if 'Contents' not in object:
-        raise Exception("{} could not be found in {}".format(
+    if "CommonPrefixes" not in response:
+        raise Exception("{} is not a directory or it does not exist".format(
             directory_name,
-            current_s3_location
         ))
     else:
         return current_s3_location + "/" + directory_name + "/"
