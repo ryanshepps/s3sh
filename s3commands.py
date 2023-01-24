@@ -13,6 +13,7 @@ from utils.s3 import \
     list_objects, \
     list_buckets, \
     bucket_exists, \
+    object_exists, \
     folder_exists
 
 
@@ -143,3 +144,24 @@ def chlocn(client, split_command, s3_location):
             print("Unable to change to {}.\n\tError: {}.".format(new_s3_location, e))
 
     return new_s3_location
+
+
+def s3delete(client, split_command, s3_location):
+    object_to_delete_path = None
+
+    if split_command[1][0] == "/":
+        object_to_delete_path = split_command[1]
+    elif s3_location == "/":
+        return "Cannot delete a relative object from outside a bucket"
+    else:
+        object_to_delete_path = s3_location + split_command[1]
+
+    try:
+        response = client.delete_object(
+            Bucket=get_root_from_path(object_to_delete_path),
+            Key=get_path_without_root(object_to_delete_path)
+        )
+    except botocore.exceptions.ClientError as e:
+        return "Cannot delete {}. \n\t{}".format(object_to_delete_path, e)
+
+    return response

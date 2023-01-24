@@ -25,6 +25,9 @@ def get_path_without_root(s3_path):
         return ""
     elif split_s3_path[0] == "/":
         root_removed_path = split_s3_path[2:]
+
+        if len(split_s3_path) > 1:
+            root_removed_path += file_in_path
     else:
         root_removed_path = split_s3_path[1:]
 

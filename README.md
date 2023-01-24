@@ -16,7 +16,7 @@ Cloud Functions
 - [x] Current working directory or location (`cwlocn`)
 - [x] List buckets, directories, objects (`list`)
 - [ ] Copy objects (`s3copy`)
-- [ ] Delete objects (`s3delete`)
+- [x] Delete objects (`s3delete`)
 - [x] Delete bucket (`delete_bucket`)
 
 ## Environments
@@ -28,3 +28,4 @@ Cloud Functions
 ## Bugs/Limitations
 
 - Can't traverse up (`..`) more than one directory.
+- `s3delete` does not tell you if an object you're trying to delete does not exist.

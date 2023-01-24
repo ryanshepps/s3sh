@@ -6,7 +6,8 @@ import boto3
 import botocore
 from s3commands import \
     create_bucket, list, locs3cp, \
-    cwlocn, chlocn, delete_bucket
+    cwlocn, chlocn, delete_bucket, \
+    s3delete
 
 
 commands = {
@@ -15,6 +16,7 @@ commands = {
     "list": list,
     "locs3cp": locs3cp,
     "cwlocn": cwlocn,
+    "s3delete": s3delete
 }
 
 
