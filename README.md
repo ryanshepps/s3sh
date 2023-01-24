@@ -11,7 +11,7 @@ Local File Functions
 Cloud Functions
 
 - [x] Create a bucket (`create_bucket`)
-- [ ] Create directory/folder (`create_folder`)
+- [x] Create directory/folder (`create_folder`)
 - [x] Change direcotry (`chlocn`)
 - [x] Current working directory or location (`cwlocn`)
 - [x] List buckets, directories, objects (`list`)

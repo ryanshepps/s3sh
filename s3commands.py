@@ -15,7 +15,8 @@ from utils.s3 import \
     list_buckets, \
     bucket_exists, \
     object_exists, \
-    folder_exists
+    folder_exists, \
+    create_folder as s3_create_folder
 
 
 def create_bucket(client, split_command, s3_location):
@@ -160,3 +161,18 @@ def s3delete(client, split_command, s3_location):
         )
     except botocore.exceptions.ClientError as e:
         return "Cannot delete {}. \n\t{}".format(object_to_delete_path, e)
+
+
+def create_folder(client, split_command, s3_location):
+    folder_location = create_relative_or_absolute_path(split_command[1], s3_location)
+
+    bucket = get_root_from_path(folder_location)
+    folder_path_key = get_path_without_root(folder_location)
+
+    if len(folder_path_key) == 0 and len(bucket) > 0:
+        return "Cannot create a folder at the bucket level."
+
+    try:
+        s3_create_folder(client, bucket, folder_path_key)
+    except botocore.exceptions.ClientError as e:
+        return "Cannot create folder {}. \n\t{}".format(folder_location, e)

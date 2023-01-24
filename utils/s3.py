@@ -1,3 +1,4 @@
+from pathlib import PurePath
 from .path import get_path_without_root, get_root_from_path
 
 
@@ -34,4 +35,11 @@ def folder_exists(client, bucket_name, directory_location):
         Prefix=directory_location,
         Delimiter="/",
         MaxKeys=1
+    )
+
+
+def create_folder(client, bucket_name, folder_location_key):
+    return client.put_object(
+        Bucket=bucket_name,
+        Key=str(PurePath(folder_location_key)) + "/"
     )
