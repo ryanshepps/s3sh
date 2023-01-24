@@ -1,5 +1,8 @@
 import unittest
-from utils.path import get_path_without_root
+from pathlib import PurePath
+from utils.path import \
+    get_path_without_root, \
+    create_relative_or_absolute_path
 
 
 class __get_path_without_root(unittest.TestCase):
@@ -40,3 +43,21 @@ class __get_path_without_root(unittest.TestCase):
 
         self.assertEqual(resulting_path, expected_path)
         self.assertEqual(resulting_path2, expected_path)
+
+
+class CreateRelativeOrAbsolutePath(unittest.TestCase):
+    def test_should_return_absolute_path_when_slash_at_beginning_of_path(self):
+        mock_requested_path = "/test/path/yeah/"
+        mock_current_path = "/s3/location/yeah/"
+
+        resulting_path = create_relative_or_absolute_path(mock_requested_path, mock_current_path)
+
+        self.assertEqual(resulting_path, mock_requested_path)
+
+    def test_should_return_relative_path_when_no_slash_at_beginning_of_path(self):
+        mock_requested_path = "test/path/yeah/"
+        mock_current_path = "/s3/location/yeah/"
+
+        resulting_path = create_relative_or_absolute_path(mock_requested_path, mock_current_path)
+
+        self.assertEqual(resulting_path, str(PurePath(mock_requested_path + mock_current_path)))

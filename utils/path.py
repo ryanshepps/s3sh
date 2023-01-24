@@ -37,3 +37,10 @@ def get_path_without_root(s3_path):
         s3_file_path += file_in_path[0]
 
     return s3_file_path
+
+
+def create_relative_or_absolute_path(requested_path, current_path):
+    if (requested_path[0] == "/"):
+        return requested_path
+    else:
+        return str(PurePath(requested_path + current_path))
