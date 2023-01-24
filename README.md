@@ -17,7 +17,7 @@ Cloud Functions
 - [x] List buckets, directories, objects (`list`)
 - [ ] Copy objects (`s3copy`)
 - [ ] Delete objects (`s3delete`)
-- [ ] Delete bucket (`delete_bucket`)
+- [x] Delete bucket (`delete_bucket`)
 
 ## Environments
 

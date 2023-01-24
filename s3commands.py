@@ -25,6 +25,15 @@ def create_bucket(client, split_command, s3_location):
         return "Cannot create bucket: \n\t{}".format(e)
 
 
+def delete_bucket(client, split_command, s3_location):
+    bucket_name = get_root_from_path(split_command[1])
+
+    try:
+        client.delete_bucket(Bucket=bucket_name)
+    except botocore.exceptions.ClientError as e:
+        return "Cannot delete bucket: \n\t{}".format(e)
+
+
 def list(client, split_command, s3_location):
     flags = get_flags(split_command)
     args = get_args(split_command)
