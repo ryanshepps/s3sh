@@ -43,3 +43,16 @@ def create_folder(client, bucket_name, folder_location_key):
         Bucket=bucket_name,
         Key=str(PurePath(folder_location_key)) + "/"
     )
+
+
+def copy_object(client, current_object_location, new_object_location):
+    copy_source = {
+        "Bucket": get_root_from_path(current_object_location),
+        "Key": get_path_without_root(current_object_location)
+    }
+
+    return client.copy(
+        CopySource=copy_source,
+        Bucket=get_root_from_path(new_object_location),
+        Key=get_path_without_root(new_object_location)
+    )

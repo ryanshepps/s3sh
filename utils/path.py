@@ -1,4 +1,5 @@
 import re
+import os
 from pathlib import PurePath
 
 
@@ -43,4 +44,8 @@ def create_relative_or_absolute_path(requested_path, current_path):
     if (requested_path[0] == "/"):
         return requested_path
     else:
-        return str(PurePath(requested_path + current_path))
+        return current_path + requested_path
+
+
+def get_file_from_path(path):
+    return os.path.basename(path)

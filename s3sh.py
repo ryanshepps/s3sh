@@ -7,7 +7,8 @@ import botocore
 from s3commands import \
     create_bucket, list, locs3cp, \
     cwlocn, chlocn, delete_bucket, \
-    s3delete, create_folder
+    s3delete, create_folder, \
+    s3copy
 
 
 commands = {
@@ -18,6 +19,7 @@ commands = {
     "cwlocn": cwlocn,
     "s3delete": s3delete,
     "create_folder": create_folder,
+    "s3copy": s3copy,
 }
 
 

@@ -9,14 +9,16 @@ from utils.cli import \
 from utils.path import \
     get_root_from_path, \
     get_path_without_root, \
-    create_relative_or_absolute_path
+    create_relative_or_absolute_path, \
+    get_file_from_path
 from utils.s3 import \
     list_objects, \
     list_buckets, \
     bucket_exists, \
     object_exists, \
     folder_exists, \
-    create_folder as s3_create_folder
+    create_folder as s3_create_folder, \
+    copy_object
 
 
 def create_bucket(client, split_command, s3_location):
@@ -176,3 +178,20 @@ def create_folder(client, split_command, s3_location):
         s3_create_folder(client, bucket, folder_path_key)
     except botocore.exceptions.ClientError as e:
         return "Cannot create folder {}. \n\t{}".format(folder_location, e)
+
+
+def s3copy(client, split_command, s3_location):
+    current_object_location = create_relative_or_absolute_path(split_command[1], s3_location)
+    new_object_location = create_relative_or_absolute_path(split_command[2], s3_location)
+
+    if new_object_location.endswith("/"):
+        new_object_location += get_file_from_path(current_object_location)
+
+    try:
+        copy_object(
+            client,
+            current_object_location,
+            new_object_location
+        )
+    except botocore.exceptions.ClientError as e:
+        return "Cannot copy object {}. Check that it exists and that it is not a folder. \n\t{}".format(current_object_location, e)

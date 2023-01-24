@@ -15,7 +15,7 @@ Cloud Functions
 - [x] Change direcotry (`chlocn`)
 - [x] Current working directory or location (`cwlocn`)
 - [x] List buckets, directories, objects (`list`)
-- [ ] Copy objects (`s3copy`)
+- [x] Copy objects (`s3copy`)
 - [x] Delete objects (`s3delete`)
 - [x] Delete bucket (`delete_bucket`)
 
