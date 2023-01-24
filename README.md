@@ -12,9 +12,9 @@ Cloud Functions
 
 - [x] Create a bucket (`create_bucket`)
 - [ ] Create directory/folder (`create_folder`)
-- [ ] Change direcotry (`chlocn`)
-- [ ] Current working directory or location (`cwlocn`)
-- [/] List buckets, directories, objects (`list`)
+- [x] Change direcotry (`chlocn`)
+- [x] Current working directory or location (`cwlocn`)
+- [x] List buckets, directories, objects (`list`)
 - [ ] Copy objects (`s3copy`)
 - [ ] Delete objects (`s3delete`)
 - [ ] Delete bucket (`delete_bucket`)
@@ -25,6 +25,6 @@ Cloud Functions
 - [x] Mac
 - [ ] Windows
 
-## Bugs
+## Bugs/Limitations
 
-- Add ability to add slash in front of bucket names
+- Can't traverse up (`..`) more than one directory.
