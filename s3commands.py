@@ -130,35 +130,44 @@ def chlocn(client, split_command, s3_location):
     new_s3_location = s3_location
 
     if len(split_command[1]) == 1 and split_command[1] == "/" or split_command[1] == "~":
-        new_s3_location = "/"
-    elif split_command[1][0] == "/":
-        print("Not doing relative paths right now.")
-    else:
+        return "/"
+
+    try:
         split_requested_s3_path = str(PurePath(split_command[1])).split("/")
         current_s3_location = s3_location
 
-        try:
-            while len(split_requested_s3_path) > 0:
-                if current_s3_location == "/":
-                    current_s3_location = __change_bucket_location(
-                        client,
-                        current_s3_location,
-                        split_requested_s3_path[0]
-                    )
-                else:
-                    current_s3_location = __change_directory_location(
-                        client,
-                        current_s3_location,
-                        split_requested_s3_path[0]
-                    )
+        if split_requested_s3_path[0] == "":
+            split_requested_s3_path = split_requested_s3_path[1:]
 
-                split_requested_s3_path = split_requested_s3_path[1:]
+        if split_command[1][0] == "/":
+            current_s3_location = __change_bucket_location(
+                client,
+                current_s3_location,
+                get_root_from_path(split_command[1])
+            )
+            split_requested_s3_path = split_requested_s3_path[1:]
 
-            new_s3_location = str(PurePath(current_s3_location)) + "/"
-        except botocore.exceptions.ClientError as e:
-            print("There was an issue changing to that location. Check that the location exists.\n\t{}".format(e))
-        except Exception as e:
-            print("Unable to change to {}.\n\tError: {}.".format(new_s3_location, e))
+        while len(split_requested_s3_path) > 0:
+            if current_s3_location == "/":
+                current_s3_location = __change_bucket_location(
+                    client,
+                    current_s3_location,
+                    split_requested_s3_path[0]
+                )
+            else:
+                current_s3_location = __change_directory_location(
+                    client,
+                    current_s3_location,
+                    split_requested_s3_path[0]
+                )
+
+            split_requested_s3_path = split_requested_s3_path[1:]
+
+        new_s3_location = str(PurePath(current_s3_location)) + "/"
+    except botocore.exceptions.ClientError as e:
+        print("There was an issue changing to that location. Check that the location exists.\n\t{}".format(e))
+    except Exception as e:
+        print("Unable to change to {}.\n\tError: {}.".format(split_command[1], e))
 
     return new_s3_location
 
