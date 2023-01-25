@@ -61,3 +61,21 @@ class Chlocn(unittest.TestCase):
         result = chlocn(None, mock_split_command, mock_s3_location)
 
         self.assertEqual(result, expected_result)
+
+    def test_should_change_to_relative_path_when_relative_path_provided(
+        self,
+        mock_folder_exists,
+        mock_bucket_exists
+    ):
+        mock_bucket_exists.return_value = True
+        mock_folder_exists.return_value = {
+            "CommonPrefixes": ["another_test_dir/"]
+        }
+
+        mock_split_command = ["chlocn", "another_test_dir/yeah/"]
+        mock_s3_location = "/random-bucket/test_dir/"
+        expected_result = "/random-bucket/test_dir/another_test_dir/yeah/"
+
+        result = chlocn(None, mock_split_command, mock_s3_location)
+
+        self.assertEqual(result, expected_result)
