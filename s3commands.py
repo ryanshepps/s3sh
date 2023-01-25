@@ -61,7 +61,7 @@ def list(client, split_command, s3_location):
 
 def locs3cp(client, split_command, s3_location):
     local_file = None
-    s3_path = split_command[2]
+    s3_path = create_relative_or_absolute_path(split_command[2], s3_location)
 
     try:
         local_file = open(split_command[1], "rb")
@@ -74,7 +74,7 @@ def locs3cp(client, split_command, s3_location):
         try:
             client.put_object(
                 Body=local_file,
-                Key=get_path_without_root(s3_path) + os.path.basename(local_file.name),
+                Key=str(PurePath(get_path_without_root(s3_path) + "/" + os.path.basename(local_file.name))),
                 Bucket=get_root_from_path(s3_path),
             )
         except botocore.exceptions.ClientError as e:
