@@ -129,7 +129,9 @@ def __change_directory_location(client, current_s3_location, directory_name):
 def chlocn(client, split_command, s3_location):
     new_s3_location = s3_location
 
-    if split_command[1][0] == "/":
+    if len(split_command[1]) == 1 and split_command[1] == "/" or split_command[1] == "~":
+        new_s3_location = "/"
+    elif split_command[1][0] == "/":
         print("Not doing relative paths right now.")
     else:
         split_requested_s3_path = str(PurePath(split_command[1])).split("/")
