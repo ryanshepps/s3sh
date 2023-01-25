@@ -92,7 +92,7 @@ def s3loccp(client, split_command, s3_location):
 
 
 def cwlocn(client, split_command, s3_location):
-    print(s3_location)
+    return s3_location
 
 
 def __change_bucket_location(client, s3_location, bucket_name):
