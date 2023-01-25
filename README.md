@@ -6,7 +6,7 @@ Local File Functions
 
 - [x] Passes all non-Cloud related commands to session shell
 - [x] Copy local file to Cloud location (`locs3cp`)
-- [ ] Copy Cloud object to local file system (`s3loccp`)
+- [x] Copy Cloud object to local file system (`s3loccp`)
 
 Cloud Functions
 

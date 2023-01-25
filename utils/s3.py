@@ -56,3 +56,11 @@ def copy_object(client, current_object_location, new_object_location):
         Bucket=get_root_from_path(new_object_location),
         Key=get_path_without_root(new_object_location)
     )
+
+
+def download_object(client, s3_object_location, local_object_location):
+    return client.download_file(
+        Bucket=get_root_from_path(s3_object_location),
+        Key=get_path_without_root(s3_object_location),
+        Filename=local_object_location
+    )

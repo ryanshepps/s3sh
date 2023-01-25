@@ -18,7 +18,8 @@ from utils.s3 import \
     object_exists, \
     folder_exists, \
     create_folder as s3_create_folder, \
-    copy_object
+    copy_object, \
+    download_object
 
 
 def create_bucket(client, split_command, s3_location):
@@ -78,6 +79,16 @@ def locs3cp(client, split_command, s3_location):
             )
         except botocore.exceptions.ClientError as e:
             return "Unsuccessful copy: \n\t{}".format(e)
+
+
+def s3loccp(client, split_command, s3_location):
+    s3_object_location = create_relative_or_absolute_path(split_command[1], s3_location)
+    local_object_location = split_command[2]
+
+    try:
+        download_object(client, s3_object_location, local_object_location)
+    except botocore.exceptions.ClientError as e:
+        return "Unseccessful copy for file {}: \n\t{}".format(s3_object_location, e)
 
 
 def cwlocn(client, split_command, s3_location):
