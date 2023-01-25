@@ -60,4 +60,4 @@ class CreateRelativeOrAbsolutePath(unittest.TestCase):
 
         resulting_path = create_relative_or_absolute_path(mock_requested_path, mock_current_path)
 
-        self.assertEqual(resulting_path, str(PurePath(mock_current_path + mock_requested_path)))
+        self.assertEqual(resulting_path, str(PurePath(mock_current_path + mock_requested_path)) + "/")
