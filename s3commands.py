@@ -110,7 +110,7 @@ def __change_directory_location(client, current_s3_location, directory_name):
     if (directory_name == ".."):
         split_current_s3_location = current_s3_location.split("/")
         split_current_s3_location = split_current_s3_location[:-2]
-        return "/".join(split_current_s3_location)
+        return "/".join(split_current_s3_location) + "/"
 
     response = folder_exists(
         client,
