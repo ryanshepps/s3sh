@@ -165,7 +165,12 @@ def chlocn(client, split_command, s3_location):
 
             split_requested_s3_path = split_requested_s3_path[1:]
 
-        new_s3_location = str(PurePath(current_s3_location)) + "/"
+        new_s3_location = str(PurePath(current_s3_location))
+
+        if (new_s3_location != "/"):
+            # PurePath takes away the ending slash if it's not just one slash
+            new_s3_location += "/"
+
     except botocore.exceptions.ClientError as e:
         print("There was an issue changing to that location. Check that the location exists.\n\t{}".format(e))
     except Exception as e:

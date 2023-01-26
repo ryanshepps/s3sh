@@ -79,3 +79,17 @@ class Chlocn(unittest.TestCase):
         result = chlocn(None, mock_split_command, mock_s3_location)
 
         self.assertEqual(result, expected_result)
+
+    def test_should_return_to_root_when_two_dots_provided_and_s3_location_is_one_level_deep(
+        self,
+        mock_folder_exists,
+        mock_bucket_exists
+    ):
+
+        mock_split_command = ["chlocn", ".."]
+        mock_s3_location = "/random-bucket/"
+        expected_result = "/"
+
+        result = chlocn(None, mock_split_command, mock_s3_location)
+
+        self.assertEqual(result, expected_result)
