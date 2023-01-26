@@ -40,3 +40,14 @@ Cloud Functions
 - [x] Linux
 - [x] Mac
 - [ ] Windows
+
+## Bugs
+
+- Can't `chlocn` to a path more than one level deep when a folder more than one level deep is empty. For example when the folder `another_test_folder/` is empty in the path `test-bucket/test_folder/another_test_folder/`, `chlocn test_folder/another_test_folder/` will fail.
+- `s3delete` silently fails when it tries to delete a file that does not exist. Deleting a file that does exist works fine.
+- Deleting empty folders with `s3delete` does not work.
+
+## Limitations
+
+- Can't `s3loccp` without specifying a file name in the local file system. Ideally, if no file name is provided (just a folder location), `s3loccp` would use the same file name as the file in s3.
+- Relative paths that go up a directory in all commands except `chlocn` do not work. For example `s3copy file.py ../` does not copy `file.py` up a directory.
