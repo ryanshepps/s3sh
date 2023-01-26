@@ -56,7 +56,7 @@ def main():
         try:
             split_command = command.split(" ")
 
-            if split_command[0] == "exit":
+            if split_command[0] == "exit" or split_command[0] == "quit":
                 break
             if split_command[0] == "chlocn":
                 s3_location = chlocn(client, split_command, s3_location)
