@@ -44,28 +44,21 @@ def list(client, split_command, s3_location):
     flags = get_flags(split_command)
     args = get_args(split_command)
 
-    if "-l" in flags:
-        print("list long format")
+    list_location = None
+    if args[1:]:
+        list_location = create_relative_or_absolute_path(args[1], s3_location)
+        if list_location[len(list_location) - 1] != "/":
+            list_location += "/"
     else:
-        if args[1:]:
-            arg_location = create_relative_or_absolute_path(args[1], s3_location)
-            if arg_location[len(arg_location) - 1] != "/":
-                arg_location += "/"
+        list_location = s3_location
 
-            if arg_location == "/":
-                buckets = list_buckets(client)
-                return format_buckets_list(buckets)
-            else:
-                objects = list_objects(client, arg_location)
-                return format_objects_list(objects, arg_location)
-        else:
-            # There are no arguments, so list the s3_location
-            if s3_location == "/":
-                buckets = list_buckets(client)
-                return format_buckets_list(buckets)
-            else:
-                objects = list_objects(client, s3_location)
-                return format_objects_list(objects, s3_location)
+    if list_location == "/":
+        buckets = list_buckets(client)
+        return format_buckets_list(buckets)
+    else:
+        objects = list_objects(client, list_location)
+        in_long_format = "-l" in flags
+        return format_objects_list(objects, list_location, in_long_format)
 
 
 def locs3cp(client, split_command, s3_location):

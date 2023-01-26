@@ -31,7 +31,7 @@ def format_buckets_list(buckets):
     return formatted_buckets_list
 
 
-def format_objects_list(objects, s3_location):
+def format_objects_list(objects, s3_location, in_long_format):
     formatted_objects_list = ""
 
     if "Contents" in objects:
@@ -45,7 +45,15 @@ def format_objects_list(objects, s3_location):
                 top_level_object_key += "/"
 
             if top_level_object_key not in already_printed_objects and top_level_object_key != ".":
-                formatted_objects_list += "{}\t".format(top_level_object_key)
+                if in_long_format:
+                    formatted_objects_list += "{}\t{}\t{}\n".format(
+                        '1' if top_level_object_key.endswith("/") else object["Size"],
+                        object["LastModified"].strftime("%b %d %H:%M"),
+                        top_level_object_key,
+                    )
+                else:
+                    formatted_objects_list += "{}\t".format(top_level_object_key)
+
                 already_printed_objects.append(top_level_object_key)
 
     return formatted_objects_list
