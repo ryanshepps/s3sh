@@ -48,7 +48,16 @@ def list(client, split_command, s3_location):
         print("list long format")
     else:
         if args[1:]:
-            print("There are arguments... {} List from the relative file location.".format(args[1:]))
+            arg_location = create_relative_or_absolute_path(args[1], s3_location)
+            if arg_location[len(arg_location) - 1] != "/":
+                arg_location += "/"
+
+            if arg_location == "/":
+                buckets = list_buckets(client)
+                return format_buckets_list(buckets)
+            else:
+                objects = list_objects(client, arg_location)
+                return format_objects_list(objects, arg_location)
         else:
             # There are no arguments, so list the s3_location
             if s3_location == "/":
