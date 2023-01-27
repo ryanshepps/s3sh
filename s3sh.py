@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from sys import platform
 import configparser
 import boto3
 import botocore
@@ -65,7 +66,10 @@ def main():
                 if return_message is not None:
                     print(return_message)
             else:
-                os.system(command)
+                if platform == "win32":
+                    os.system("Powershell.exe " + command)
+                else:
+                    os.system(command)
         except Exception as e:
             print("An unknwon error occurred while running your command: \n\t{}".format(e))
 

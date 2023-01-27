@@ -1,12 +1,12 @@
 import re
 import os
-from pathlib import PurePath
+from pathlib import PurePosixPath
 
 
 def get_root_from_path(s3_path):
     bucket_name = None
 
-    pure_path = str(PurePath(s3_path))
+    pure_path = str(PurePosixPath(s3_path))
     split_path = pure_path.split("/")
 
     if split_path[0] == "":

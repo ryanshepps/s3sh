@@ -1,5 +1,5 @@
 import unittest
-from pathlib import PurePath
+from pathlib import PurePosixPath
 from utils.path import \
     get_path_without_root, \
     create_relative_or_absolute_path
@@ -60,4 +60,4 @@ class CreateRelativeOrAbsolutePath(unittest.TestCase):
 
         resulting_path = create_relative_or_absolute_path(mock_requested_path, mock_current_path)
 
-        self.assertEqual(resulting_path, str(PurePath(mock_current_path + mock_requested_path)) + "/")
+        self.assertEqual(resulting_path, str(PurePosixPath(mock_current_path + mock_requested_path)) + "/")

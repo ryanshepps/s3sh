@@ -1,6 +1,6 @@
 import os
 import botocore
-from pathlib import PurePath
+from pathlib import PurePosixPath
 from utils.cli import \
     get_flags, \
     get_args, \
@@ -73,11 +73,17 @@ def locs3cp(client, split_command, s3_location):
             .format(split_command[1])
 
     if local_file is not None:
+        key = str(PurePosixPath(get_path_without_root(s3_path) + "/" + os.path.basename(local_file.name)))
+        bucket = get_root_from_path(s3_path)
+
+        if (key.startswith("/")):
+            key = key[1:]
+
         try:
             client.put_object(
                 Body=local_file,
-                Key=str(PurePath(get_path_without_root(s3_path) + "/" + os.path.basename(local_file.name))),
-                Bucket=get_root_from_path(s3_path),
+                Key=key,
+                Bucket=bucket,
             )
         except botocore.exceptions.ClientError as e:
             return "Unsuccessful copy: \n\t{}".format(e)
@@ -135,7 +141,7 @@ def chlocn(client, split_command, s3_location):
         return "/"
 
     try:
-        split_requested_s3_path = str(PurePath(split_command[1])).split("/")
+        split_requested_s3_path = str(PurePosixPath(split_command[1])).split("/")
         current_s3_location = s3_location
 
         if split_requested_s3_path[0] == "":
@@ -165,10 +171,10 @@ def chlocn(client, split_command, s3_location):
 
             split_requested_s3_path = split_requested_s3_path[1:]
 
-        new_s3_location = str(PurePath(current_s3_location))
+        new_s3_location = str(PurePosixPath(current_s3_location))
 
         if (new_s3_location != "/"):
-            # PurePath takes away the ending slash if it's not just one slash
+            # PurePosixPath takes away the ending slash if it's not just one slash
             new_s3_location += "/"
 
     except botocore.exceptions.ClientError as e:
